@@ -82,6 +82,9 @@ public class Jyn {
 
     public double cost(JMatrix output, JMatrix target)
     {
+        //System.out.println(output.getList());
+        //System.out.println(target.getList());
+
         return JMatrix.sum(JMatrix.power(JMatrix.sub(output, target),2));
     }
 
@@ -116,6 +119,7 @@ public class Jyn {
             biases = this.nn.get(i).get(1);
 
             z = JMatrix.add(JMatrix.dot(activations.get(activations.size()-1), weights), biases);
+           
             activation = this.activation_functions.get(count).apply(z);
             activations.add(activation);
 
@@ -147,7 +151,7 @@ public class Jyn {
                 {
                     JMatrix sp =  this.activation_derv_functions.get(this.activation_derv_functions.size()-i).apply(activations.get(activations.size()-i));
 
-                    delta = JMatrix.mul(JMatrix.transpose(JMatrix.dot(this.nn.get(this.nn.size()-i+1).get(0), delta)), sp);
+                    delta = JMatrix.mul(JMatrix.dot(delta, JMatrix.transpose(this.nn.get(this.nn.size()-i+1).get(0))), sp);
                     this.gradients.get(this.gradients.size()-i).set(0, JMatrix.outer(activations.get(activations.size()-i-1), delta));
                     this.gradients.get(this.gradients.size()-i).set(1, delta);
                 }
